@@ -44,7 +44,7 @@
             android:resource="@array/preloaded_fonts" />
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyDfggl8bnPp8MhXTL0pZPctyLdHzRhUzdU" />
+            android:value="Enter API Key" />
     </application>
 
 </manifest>
