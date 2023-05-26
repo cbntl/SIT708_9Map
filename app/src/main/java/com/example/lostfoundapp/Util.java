@@ -11,6 +11,8 @@ public class Util {
     public static final String ITEM_NAME = "item_name";
     public static final String PHONE_NUMBER = "phone_number";
     public static final String DESCRIPTION = "description";
+    public static final String LAT = "lat";
+    public static final String LON = "lon";
 
 
 }

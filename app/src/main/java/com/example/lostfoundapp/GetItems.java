@@ -21,6 +21,7 @@ public class GetItems extends AppCompatActivity implements ItemRecyclerView.OnIt
         super.onCreate(savedInstanceState);
         setContentView(R.layout.list_all_items);
         db = new ItemsDatabase(this);
+        this.deleteDatabase(String.valueOf(db));
 
         recyclerView = findViewById(R.id.view_items);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -30,6 +31,8 @@ public class GetItems extends AppCompatActivity implements ItemRecyclerView.OnIt
         recyclerView.setAdapter(itemRecyclerView);
         itemList.addAll((Collection<? extends Item>) db.getItems());
         itemRecyclerView.notifyDataSetChanged();
+
+
     }
 
 

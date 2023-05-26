@@ -14,21 +14,27 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ItemsDatabase extends SQLiteOpenHelper {
+
     public ItemsDatabase(@Nullable Context context) {
         super(context, Util.DATABASE_NAME, null, Util.DATABASE_VERSION);
     }
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-        String CREATE_POST_TABLE = String.format("CREATE TABLE %s(%s INTEGER PRIMARY KEY AUTOINCREMENT, %s TEXT, %s TEXT, %s TEXT, %s TEXT, %s TEXT, %s TEXT)", Util.TABLE_NAME, Util.ITEM_ID, Util.ITEM_NAME, Util.PHONE_NUMBER, Util.DESCRIPTION, Util.TYPE, Util.DATE, Util.LOCATION);
+        String CREATE_POST_TABLE = String.format("CREATE TABLE %s(%s INTEGER PRIMARY KEY AUTOINCREMENT, %s TEXT, %s TEXT, %s TEXT, %s TEXT, %s TEXT, %s TEXT, %s TEXT, %s TEXT)", Util.TABLE_NAME, Util.ITEM_ID, Util.ITEM_NAME, Util.PHONE_NUMBER, Util.DESCRIPTION, Util.TYPE, Util.DATE, Util.LOCATION, Util.LAT, Util.LON);
+
+//        String CREATE_POST_TABLE = "CREATE TABLE items (id TEXT PRIMARY KEY, name TEXT, type TEXT, phone TEXT, description TEXT, date TEXT, lat TEXT, lon TEXT)";
         sqLiteDatabase.execSQL(CREATE_POST_TABLE);
     }
 
+
     @Override
-    public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
-        String DROP_POST_TABLE = String.format("DROP TABLE IF EXISTS %s", Util.TABLE_NAME);
-        sqLiteDatabase.execSQL(DROP_POST_TABLE);
-        onCreate(sqLiteDatabase);
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        if (oldVersion < 2) {
+            // Add the "lat" and "lon" columns to the "items" table
+            db.execSQL("ALTER TABLE items ADD COLUMN lat REAL");
+            db.execSQL("ALTER TABLE items ADD COLUMN lon REAL");
+        }
     }
 
     public long addItem(Item post) {
@@ -40,6 +46,8 @@ public class ItemsDatabase extends SQLiteOpenHelper {
         contentValues.put(Util.TYPE, post.getType());
         contentValues.put(Util.DATE, post.getDate());
         contentValues.put(Util.LOCATION, post.getLocation());
+        contentValues.put(Util.LAT, post.getLat());
+        contentValues.put(Util.LON, post.getLon());
         long newRowId = db.insert(Util.TABLE_NAME, null, contentValues);
         db.close();
         return newRowId;
@@ -48,7 +56,7 @@ public class ItemsDatabase extends SQLiteOpenHelper {
     public List<Item> getItems() {
         List<Item> posts = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
-        String[] projection = {Util.ITEM_ID, Util.ITEM_NAME, Util.PHONE_NUMBER, Util.DESCRIPTION, Util.TYPE, Util.DATE, Util.LOCATION};
+        String[] projection = {Util.ITEM_ID, Util.ITEM_NAME, Util.PHONE_NUMBER, Util.DESCRIPTION, Util.TYPE, Util.DATE, Util.LOCATION, Util.LAT, Util.LON};
         Cursor cursor = db.query(Util.TABLE_NAME, projection, null, null, null, null, null);
         if (cursor.moveToFirst()) {
             do {
@@ -65,7 +73,7 @@ public class ItemsDatabase extends SQLiteOpenHelper {
 
     public Item getPostById(int postId) {
         SQLiteDatabase db = this.getReadableDatabase();
-        String[] projection = {Util.ITEM_ID, Util.ITEM_NAME, Util.PHONE_NUMBER, Util.DESCRIPTION, Util.TYPE, Util.DATE, Util.LOCATION};
+        String[] projection = {Util.ITEM_ID, Util.ITEM_NAME, Util.PHONE_NUMBER, Util.DESCRIPTION, Util.TYPE, Util.DATE, Util.LOCATION, Util.LAT, Util.LON};
         String selection = Util.ITEM_ID + "=?";
         String[] selectionArgs = {String.valueOf(postId)};
         Cursor cursor = db.query(Util.TABLE_NAME, projection, selection, selectionArgs, null, null, null);
@@ -79,8 +87,9 @@ public class ItemsDatabase extends SQLiteOpenHelper {
             String state = cursor.getString(cursor.getColumnIndexOrThrow(Util.TYPE));
             String date = cursor.getString(cursor.getColumnIndexOrThrow(Util.DATE));
             String location = cursor.getString(cursor.getColumnIndexOrThrow(Util.LOCATION));
-
-            post = new Item(id, name, phoneNumber, description, state, date, location);
+            double lat = cursor.getDouble(cursor.getColumnIndexOrThrow(Util.LAT));
+            double lon = cursor.getDouble(cursor.getColumnIndexOrThrow(Util.LON));
+            post = new Item(id, name, phoneNumber, description, state, date, location, lat, lon);
         }
 
         cursor.close();
@@ -96,4 +105,5 @@ public class ItemsDatabase extends SQLiteOpenHelper {
         db.close();
         return count;
     }
+
 }

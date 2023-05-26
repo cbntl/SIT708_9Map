@@ -62,5 +62,19 @@
             android:textColor="@android:color/white"
             android:textSize="18sp"
             app:backgroundTint="@color/DarkCyan" />
+
+        <Button
+            android:id="@+id/showOnMapButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="30dp"
+            android:padding="16dp"
+            android:shadowColor="@color/black"
+            android:text="Show on Map"
+            android:textColor="@android:color/white"
+            android:textSize="18sp"
+            app:backgroundTint="@color/MidnightBlue" />
+
     </LinearLayout>
 </LinearLayout>
