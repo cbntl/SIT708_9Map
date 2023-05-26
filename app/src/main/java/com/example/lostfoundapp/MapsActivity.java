@@ -20,7 +20,6 @@ import java.util.List;
 public class MapsActivity extends AppCompatActivity {
 
     private GoogleMap mMap;
-    BitmapDescriptor lostIcon, foundIcon;
     ItemsDatabase db;
     private List<Item> lostAndFoundItems;
 
@@ -51,11 +50,6 @@ public class MapsActivity extends AppCompatActivity {
         }
     }
 
-    private BitmapDescriptor getResizedBitmapDescriptor(int resourceId, int width, int height) {
-        Resources resources = getApplicationContext().getResources();
-        Bitmap bitmap = BitmapFactory.decodeResource(resources, resourceId);
-        Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, width, height, false);
-        return BitmapDescriptorFactory.fromBitmap(resizedBitmap);
-    }
+
 
 }
